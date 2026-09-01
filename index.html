@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Research Guide">
+<title>Retatrutide Research Guide</title>
+<style>
+  :root{
+    --bg:#f6f7f9; --panel:#ffffff; --card:#eef1f4; --text:#17191c;
+    --muted:#626971; --border:#d8dde3; --accent:#2d6cdf; --accent-soft:#eaf1ff;
+    --safe-top:env(safe-area-inset-top,0px);
+    --safe-bottom:env(safe-area-inset-bottom,0px);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html{background:var(--bg)}
+  body{
+    margin:0;background:var(--bg);color:var(--text);
+    font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:17px;
+  }
+  button{font:inherit}
+  .app{
+    width:100%;max-width:620px;margin:0 auto;
+    padding:calc(12px + var(--safe-top)) 14px calc(22px + var(--safe-bottom));
+  }
+  .banner{
+    padding:11px 10px;border:1px solid var(--border);border-radius:12px;background:var(--card);
+    text-align:center;font-size:11px;font-weight:800;letter-spacing:.055em;color:var(--muted)
+  }
+  .header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:14px}
+  .step{font-size:14px;font-weight:800}
+  .hint{font-size:13px;color:var(--muted);margin-top:2px}
+  .btn{
+    min-height:48px;border:1px solid var(--border);border-radius:13px;
+    background:#fff;color:var(--text);padding:11px 15px;font-weight:750;cursor:pointer;
+    touch-action:manipulation
+  }
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn:disabled{opacity:.38;cursor:not-allowed}
+  .restart{min-height:44px;padding:8px 12px;font-size:14px}
+  .progress{height:7px;background:var(--card);border-radius:999px;overflow:hidden;margin:14px 0 16px}
+  .bar{height:100%;background:var(--accent);transition:width .18s ease}
+  .panel{
+    background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:18px;
+    min-height:330px;
+  }
+  .eyebrow{font-size:11px;font-weight:850;letter-spacing:.075em;color:var(--muted)}
+  h1,h2{margin:0;color:var(--text)}
+  h2{font-size:23px;line-height:1.2;margin-top:6px}
+  p{line-height:1.55}
+  .small{font-size:14px;color:var(--muted)}
+  .choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:18px}
+  .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin-top:18px}
+  .choice{
+    min-height:58px;border:1px solid var(--border);border-radius:14px;background:#fff;
+    color:var(--text);font-size:16px;font-weight:800;padding:10px 8px;cursor:pointer;
+    touch-action:manipulation
+  }
+  .choice.selected{border:2px solid var(--accent);background:var(--accent-soft)}
+  .card{border:1px solid var(--border);border-radius:14px;padding:15px;background:#fff}
+  .soft{background:var(--card);border-radius:12px;padding:13px;margin-top:15px;color:var(--muted);font-size:14px;line-height:1.5}
+  .big{font-size:32px;font-weight:850;margin-top:3px}
+  .review{border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-top:17px}
+  .row{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;padding:14px;border-bottom:1px solid var(--border)}
+  .row:last-child{border-bottom:0}
+  .label{font-size:14px;color:var(--muted)}
+  .value{font-size:15px;font-weight:800;text-align:right;max-width:60%}
+  .nav{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+  .illus{display:flex;justify-content:center;margin:0 0 10px}
+  svg{width:132px;height:auto}
+  .checks{display:grid;gap:9px;margin-top:16px}
+  .check{border:1px solid var(--border);border-radius:12px;padding:13px;font-size:14px;line-height:1.45}
+  .subnav{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+  .complete{font-size:14px;color:var(--muted);margin-top:14px}
+  @media (max-width:390px){
+    body{font-size:16px}
+    .app{padding-left:10px;padding-right:10px}
+    .panel{padding:15px}
+    .choices{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .grid2,.subnav{grid-template-columns:1fr}
+    h2{font-size:21px}
+  }
+  @media (prefers-reduced-motion:reduce){.bar{transition:none}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="banner">FOR RESEARCH USE ONLY — NOT FOR HUMAN OR ANIMAL USE</div>
+
+  <div class="header">
+    <div>
+      <div id="stepLabel" class="step">Step 1 of 6</div>
+      <div id="hint" class="hint">Tap an option, then continue.</div>
+    </div>
+    <button id="restart" type="button" class="btn restart">Start over</button>
+  </div>
+
+  <div class="progress"><div id="bar" class="bar" style="width:16.67%"></div></div>
+
+  <main id="panel" class="panel" aria-live="polite"></main>
+
+  <div class="nav">
+    <button id="back" type="button" class="btn">← Back</button>
+    <button id="next" type="button" class="btn primary">Next →</button>
+  </div>
+</div>
+
+<script>
+(() => {
+  let step = 0;
+  let handlingStep = 0;
+  const state = { weeklyDose:"", branch:"", vial:"", protocolStatus:"" };
+
+  const panel = document.getElementById("panel");
+  const stepLabel = document.getElementById("stepLabel");
+  const hint = document.getElementById("hint");
+  const bar = document.getElementById("bar");
+  const back = document.getElementById("back");
+  const next = document.getElementById("next");
+  const restart = document.getElementById("restart");
+
+  const doses = [];
+  for(let n=2;n<=10.0001;n+=0.5) doses.push(n.toFixed(1));
+
+  function vialSvg(){
+    return `<div class="illus" aria-hidden="true">
+      <svg viewBox="0 0 180 150">
+        <rect x="62" y="20" width="56" height="24" rx="5" fill="#cfd4da"/>
+        <rect x="58" y="42" width="64" height="90" rx="12" fill="#f7f8fa" stroke="#9aa1a9" stroke-width="2"/>
+        <rect x="66" y="66" width="48" height="38" rx="5" fill="#eef1f4"/>
+        <text x="90" y="82" text-anchor="middle" font-size="12" fill="#30343a" font-weight="700">VIAL</text>
+        <text x="90" y="97" text-anchor="middle" font-size="9" fill="#6b727a">research label</text>
+      </svg>
+    </div>`;
+  }
+
+  function waterSvg(){
+    return `<div class="illus" aria-hidden="true">
+      <svg viewBox="0 0 180 150">
+        <rect x="62" y="20" width="56" height="24" rx="5" fill="#cfd4da"/>
+        <rect x="58" y="42" width="64" height="90" rx="12" fill="#f7f8fa" stroke="#9aa1a9" stroke-width="2"/>
+        <path d="M66 112h48v12H66z" fill="#dceaff"/>
+        <path d="M90 58c11 14 17 23 17 31a17 17 0 1 1-34 0c0-8 6-17 17-31z" fill="#cfe0ff"/>
+      </svg>
+    </div>`;
+  }
+
+  function choice(group,value,label,selected){
+    return `<button type="button" class="choice ${selected ? "selected":""}" data-group="${group}" data-value="${value}">${label}</button>`;
+  }
+
+  function doseScreen(){
+    return `
+      <div class="eyebrow">STEP 1 · WEEKLY DOSE</div>
+      <h2>What weekly dose are you reviewing?</h2>
+      <p class="small">Tap one dose. No typing required.</p>
+      <div class="choices">
+        ${doses.map(v=>choice("weeklyDose",v,`${v} mg`,state.weeklyDose===v)).join("")}
+      </div>`;
+  }
+
+  function branchScreen(){
+    const d = Number(state.weeklyDose);
+    state.branch = d < 4 ? "Standard-concentration protocol" : "Higher-concentration protocol";
+    return `
+      <div class="eyebrow">STEP 2 · AUTOMATIC BRANCH</div>
+      <h2>Protocol branch selected automatically</h2>
+      <div class="card" style="text-align:center;margin-top:18px">
+        <div class="small">Selected weekly dose</div>
+        <div class="big">${state.weeklyDose} mg</div>
+        <div class="soft" style="color:var(--text);font-weight:800">${state.branch}</div>
+      </div>
+      <p class="small">The exact concentration, BAC-water amount, and syringe-unit conversion must come from the approved research protocol.</p>`;
+  }
+
+  function vialScreen(){
+    return `
+      ${vialSvg()}
+      <div class="eyebrow">STEP 3 · VIAL</div>
+      <h2>What vial do you have?</h2>
+      <p class="small">Tap the amount printed on the vial label.</p>
+      <div class="grid2">
+        ${["10","15","20","30"].map(v=>choice("vial",v,`${v} mg`,state.vial===v)).join("")}
+      </div>`;
+  }
+
+  function protocolScreen(){
+    return `
+      ${waterSvg()}
+      <div class="eyebrow">STEP 4 · BAC WATER</div>
+      <h2>Do you have the protocol-specified BAC-water amount?</h2>
+      <p class="small">Use the exact reconstitution volume from the approved research protocol.</p>
+      <div class="grid2">
+        ${choice("protocolStatus","have","✓ I have the protocol amount",state.protocolStatus==="have")}
+        ${choice("protocolStatus","verify","I need to verify it",state.protocolStatus==="verify")}
+      </div>
+      ${state.protocolStatus==="verify" ? `<div class="soft">Verify the protocol-specific reconstitution amount before proceeding.</div>` : ""}`;
+  }
+
+  function reviewScreen(){
+    return `
+      <div class="eyebrow">STEP 5 · REVIEW</div>
+      <h2>Check everything before continuing</h2>
+      <div class="review">
+        <div class="row"><span class="label">Weekly dose</span><span class="value">${state.weeklyDose} mg</span></div>
+        <div class="row"><span class="label">Branch</span><span class="value">${state.branch}</span></div>
+        <div class="row"><span class="label">Vial</span><span class="value">${state.vial} mg</span></div>
+        <div class="row"><span class="label">BAC-water instructions</span><span class="value">${state.protocolStatus==="have" ? "Protocol available" : "Needs verification"}</span></div>
+      </div>
+      <div class="soft">Continue only after protocol-specific preparation information has been verified.</div>`;
+  }
+
+  const handling = [
+    ["Prepare the workspace","Use a clean workspace and follow the hygiene and aseptic-handling requirements in the approved protocol."],
+    ["Check the vial","Confirm the vial is intact and that its label, lot information, and research documentation match."],
+    ["Clean the vial septum","Follow the approved protocol for septum disinfection and allow the surface to dry before further handling."],
+    ["Use the protocol-specified diluent amount","Use only the reconstitution volume stated in the approved research protocol."],
+    ["Mix gently","Do not shake. Use only the gentle-mixing method specified by the approved research protocol."],
+    ["Inspect the solution","Follow the protocol criteria for acceptable appearance and do not use material that appears compromised."],
+    ["Label, document and store","Record the preparation details and follow the validated protocol for labeling, storage conditions, and handling duration."]
+  ];
+
+  function handlingScreen(){
+    const [title,body] = handling[handlingStep];
+    return `
+      <div class="eyebrow">STEP 6 · HANDLING ${handlingStep+1} OF ${handling.length}</div>
+      <h2>${title}</h2>
+      <p>${body}</p>
+      <div class="checks">
+        <div class="check"><strong>Selected dose:</strong> ${state.weeklyDose} mg/week</div>
+        <div class="check"><strong>Selected vial:</strong> ${state.vial} mg</div>
+        <div class="check"><strong>Protocol branch:</strong> ${state.branch}</div>
+      </div>
+      <div class="subnav">
+        <button id="hBack" type="button" class="btn" ${handlingStep===0 ? "disabled":""}>← Previous</button>
+        <button id="hNext" type="button" class="btn primary">${handlingStep===handling.length-1 ? "Complete ✓":"Next step →"}</button>
+      </div>
+      <div class="complete">This guide does not generate reconstitution quantities, concentrations, syringe-unit conversions, or administration instructions.</div>`;
+  }
+
+  const screens = [doseScreen,branchScreen,vialScreen,protocolScreen,reviewScreen,handlingScreen];
+
+  function valid(){
+    if(step===0) return !!state.weeklyDose;
+    if(step===2) return !!state.vial;
+    if(step===3) return !!state.protocolStatus;
+    return true;
+  }
+
+  function render(){
+    if(state.weeklyDose){
+      state.branch = Number(state.weeklyDose) < 4 ? "Standard-concentration protocol" : "Higher-concentration protocol";
+    }
+    panel.innerHTML = screens[step]();
+    stepLabel.textContent = `Step ${step+1} of ${screens.length}`;
+    hint.textContent = step===5 ? "Move through one handling step at a time." : "Tap or review, then continue.";
+    bar.style.width = `${((step+1)/screens.length)*100}%`;
+    back.disabled = step===0;
+    next.disabled = !valid() || step===screens.length-1;
+    next.textContent = step===screens.length-1 ? "Guide complete" : "Next →";
+
+    document.querySelectorAll(".choice").forEach(btn=>{
+      btn.addEventListener("click",()=>{
+        state[btn.dataset.group]=btn.dataset.value;
+        render();
+      });
+    });
+
+    const hb=document.getElementById("hBack");
+    const hn=document.getElementById("hNext");
+    if(hb) hb.addEventListener("click",()=>{ if(handlingStep>0){handlingStep--;render();} });
+    if(hn) hn.addEventListener("click",()=>{ if(handlingStep<handling.length-1){handlingStep++;render();} });
+  }
+
+  back.addEventListener("click",()=>{ if(step>0){step--;render();} });
+  next.addEventListener("click",()=>{ if(valid() && step<screens.length-1){step++;render();} });
+  restart.addEventListener("click",()=>{
+    step=0; handlingStep=0;
+    state.weeklyDose=""; state.branch=""; state.vial=""; state.protocolStatus="";
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
