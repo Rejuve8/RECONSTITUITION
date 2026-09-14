@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Step-by-step guide to peptide reconstitution mathematics. For research purposes only. Not medical advice.">
+<title>Peptide Reconstitution Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fafaf7;--card:#fff;--ink:#2b3442;--ink-soft:#5c6d81;--accent:#1f7a63;--accent-soft:#e6f3ef;--accent-deep:#155745;--line:#e5eaf0;--radius:18px;--shadow:0 8px 24px rgba(30,45,65,.08)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Nunito',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;min-height:100vh;min-height:100dvh}
+.app{max-width:480px;margin:0 auto;display:flex;flex-direction:column;min-height:100vh;min-height:100dvh}
+.topbar{position:sticky;top:0;z-index:30;background:rgba(250,250,247,.96);backdrop-filter:blur(8px);padding:12px 18px 0;border-bottom:1px solid var(--line)}
+.topbar-row{display:flex;align-items:center;gap:8px;font-weight:800;font-size:.92rem}.brand-dot{width:10px;height:10px;border-radius:50%;background:var(--accent)}
+.step-count{margin-left:auto;color:var(--ink-soft);font-weight:600;font-size:.8rem}.progress-track{height:5px;background:var(--line);border-radius:99px;margin-top:10px;overflow:hidden}.progress-fill{height:100%;width:10%;background:var(--accent);border-radius:99px;transition:width .4s cubic-bezier(.4,0,.2,1)}
+main{flex:1;display:flex;flex-direction:column}.step{display:none;flex-direction:column;flex:1}.step.active{display:flex;animation:fadeUp .28s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.step-inner{flex:1;padding:22px 20px 12px;width:100%;max-width:440px;margin:0 auto}
+h1{font-size:1.55rem;line-height:1.25;font-weight:800}h2{font-size:1.35rem;font-weight:800;margin-bottom:6px}.subtitle{color:var(--ink-soft);margin-top:8px;font-size:.98rem}.lead{color:var(--ink-soft);margin-bottom:16px;font-size:.95rem}.center{text-align:center}
+.hero-svg{width:100%;max-width:320px;display:block;margin:8px auto 12px}.facts{list-style:none;margin:14px 0}.facts li{padding:8px 12px;background:var(--accent-soft);border-radius:10px;margin-bottom:8px;font-weight:700;font-size:.92rem;color:var(--accent)}
+.edu-badge{background:var(--accent-soft);color:var(--accent);font-weight:800;font-size:.82rem;text-align:center;padding:10px 14px;border-radius:12px;margin:10px 0}.small-note{font-size:.76rem;color:var(--ink-soft);margin-top:12px}.note-strong{background:#fff7ec;border-left:4px solid #e0a800;color:#7a5b00;padding:10px 12px;border-radius:10px;font-size:.8rem;margin-top:14px;font-weight:600}.syringe-note{background:#eef4fb;border:1.5px solid #b8d4ec;border-radius:12px;padding:12px 14px;font-size:.85rem;margin-top:14px;color:#23507a}.warn-box{background:#fdeeee;border:1.5px solid #e8b4b4;color:#7c2a2a;border-radius:12px;padding:12px 14px;font-size:.85rem;margin-top:14px;font-weight:600}.insight{background:#eef4fb;color:#23507a;padding:10px 14px;border-radius:12px;font-size:.85rem;font-weight:700;margin-top:14px}
+.visual-card{background:linear-gradient(180deg,#ffffff,#f8fbfa);border:1.5px solid var(--line);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);margin:10px 0 16px}
+.visual-title{font-size:.76rem;text-transform:uppercase;letter-spacing:.05em;font-weight:800;color:var(--ink-soft);margin-bottom:10px}
+.vial-visual{display:flex;justify-content:center;margin:6px 0 12px}.vial-visual svg{width:130px}.field-label{display:block;font-weight:700;font-size:.85rem;margin-bottom:6px;color:var(--ink-soft)}.input-row{display:flex;gap:8px}
+#mgInput{flex:1;font-family:inherit;font-size:1.4rem;font-weight:800;text-align:center;padding:14px;border:2px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);outline:none;transition:border-color .2s}#mgInput:focus{border-color:var(--accent)}.unit-chip{display:flex;align-items:center;padding:0 16px;background:var(--accent-soft);color:var(--accent);border-radius:14px;font-weight:800}
+.chip-row{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}.chip{padding:14px 4px;border-radius:12px;border:2px solid var(--line);background:var(--card);font-family:inherit;font-weight:800;font-size:.95rem;color:var(--ink);cursor:pointer;transition:all .15s}.chip:active{transform:scale(.96)}.chip.selected{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.equation-card{background:var(--card);border:1.5px solid var(--line);border-radius:var(--radius);padding:18px;text-align:center;box-shadow:var(--shadow)}.eq-line{font-size:1.05rem;margin:6px 0;color:var(--ink-soft)}.eq-line strong{color:var(--ink);font-size:1.2rem}
+.result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}.result-tile{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:12px 8px;text-align:center}.tile-label{display:block;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);margin-bottom:4px}.tile-value{display:block;font-weight:800;font-size:1.15rem;color:var(--accent)}
+.ratio-visual{display:grid;grid-template-columns:1fr 32px 1fr 32px 1fr;align-items:center;gap:4px}
+.mini-panel{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:10px 8px;text-align:center;min-height:138px;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.mini-panel strong{font-size:1rem;color:var(--accent-deep);display:block;margin-top:6px}.mini-panel small{font-size:.72rem;color:var(--ink-soft);font-weight:700}
+.flow-op{font-size:1.3rem;color:var(--accent);font-weight:800;text-align:center}
+.step3-svg{width:74px;height:74px;display:block}
+.capacity-bar{height:8px;background:#eef2f6;border-radius:99px;overflow:hidden;width:100%;margin-top:8px}.capacity-fill{height:100%;background:var(--accent);width:0%;transition:width .3s ease}.capacity-label{font-size:.68rem;margin-top:5px;color:var(--ink-soft);font-weight:700}
+.equip-grid{display:flex;flex-wrap:wrap;gap:10px}.equip-item{flex:1 1 44%;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:14px 8px 10px;text-align:center;font-weight:700;font-size:.82rem;box-shadow:var(--shadow)}.equip-item svg{width:64px;height:64px;margin-bottom:4px}
+.prep-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px}.prep-tile{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:12px;text-align:center;box-shadow:var(--shadow)}.prep-tile svg{width:68px;height:68px;margin:0 auto 8px;display:block}.prep-tile strong{display:block;font-size:.84rem}.prep-tile span{display:block;font-size:.72rem;color:var(--ink-soft);margin-top:4px}
+.card-list{margin-top:10px}.card{display:flex;gap:12px;align-items:center;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:8px;box-shadow:var(--shadow)}.card-ico{font-size:1.4rem}.card-tx{display:flex;flex-direction:column;font-size:.88rem}.card-tx strong{font-size:.95rem}
+.flow-gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.flow-step{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:10px;text-align:center;box-shadow:var(--shadow)}.flow-step svg{width:64px;height:80px}.flow-step strong{display:block;font-size:.82rem;margin-top:6px}.flow-step span{display:block;font-size:.7rem;color:var(--ink-soft);margin-top:2px}.flow-step.full{grid-column:1/-1}.sequence-arrow{text-align:center;color:var(--accent);font-weight:800;font-size:1rem;margin-bottom:6px}.mix-steps{display:grid;gap:10px;margin-top:2px}.mix-panel{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:12px;box-shadow:var(--shadow)}.mix-panel strong{display:block;font-size:.86rem;margin-top:8px}.mix-panel span{display:block;font-size:.74rem;color:var(--ink-soft);margin-top:4px}.mix-panel svg{width:100%;height:auto;display:block}.mix-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mix-note{background:#eef4fb;border:1.5px solid #b8d4ec;border-radius:12px;padding:12px 14px;font-size:.84rem;color:#23507a;font-weight:700}.avoid-shake{background:#fdeeee;border:1.5px solid #e8b4b4;color:#7c2a2a;border-radius:12px;padding:12px 14px;font-size:.84rem;font-weight:700}.roll-arrow{animation:slideCue 1.6s ease-in-out infinite}.roll-vial{animation:rollPin 1.9s ease-in-out infinite;transform-box:fill-box;transform-origin:center}.roll-dot{animation:rollPinInner 1.9s ease-in-out infinite;transform-box:fill-box;transform-origin:center}.surface-line{stroke:#9fb0c0;stroke-width:3;stroke-linecap:round}.motion-fade{animation:fadePulse 1.6s ease-in-out infinite}.rotation-cue{animation:spinCue 1.6s ease-in-out infinite}@keyframes slideCue{0%,100%{transform:translateX(-8px)}50%{transform:translateX(8px)}}@keyframes rollPin{0%{transform:translateX(-14px) rotate(-110deg)}50%{transform:translateX(14px) rotate(110deg)}100%{transform:translateX(-14px) rotate(250deg)}}@keyframes rollPinInner{0%{transform:translateX(-3px) rotate(-110deg)}50%{transform:translateX(3px) rotate(110deg)}100%{transform:translateX(-3px) rotate(250deg)}}@keyframes spinCue{0%,100%{transform:rotate(0deg)}50%{transform:rotate(180deg)}}@keyframes fadePulse{0%,100%{opacity:.35}50%{opacity:1}}.rolling-demo{background:#f8fbfa;border:1.5px solid var(--line);border-radius:14px;padding:10px}.rolling-demo svg{width:100%;height:auto;display:block}.roll-caption{font-size:.74rem;color:var(--ink-soft);margin-top:6px;text-align:center}.roll-marker{animation:markerSpin 2.2s ease-in-out infinite;transform-box:fill-box;transform-origin:center}.roll-track-vial{animation:rollingTravel 2.2s ease-in-out infinite;transform-box:fill-box;transform-origin:center}.ghost-vial{opacity:.18}.travel-arrow{animation:travelPulse 1.8s ease-in-out infinite}.travel-arrow.rev{animation-delay:.9s}.travel-text{font-size:.66rem;fill:#5c6d81;font-weight:800;font-family:Nunito, sans-serif}.surface-panel{fill:#ffffff;stroke:#dbe4eb;stroke-width:2}.surface-line{stroke:#9fb0c0;stroke-width:3;stroke-linecap:round}@keyframes rollingTravel{0%{transform:translateY(26px)}50%{transform:translateY(-26px)}100%{transform:translateY(26px)}}@keyframes markerSpin{0%{transform:rotate(0deg)}50%{transform:rotate(180deg)}100%{transform:rotate(360deg)}}@keyframes travelPulse{0%,100%{opacity:.55}50%{opacity:1}}
+.calc-flow{display:flex;align-items:stretch;gap:6px;margin-top:10px}.calc-box{flex:1;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:12px 6px;text-align:center;box-shadow:var(--shadow)}.calc-box-result{border-color:var(--accent);background:var(--accent-soft)}.calc-label{display:block;font-size:.65rem;text-transform:uppercase;font-weight:800;letter-spacing:.04em;color:var(--ink-soft)}.calc-value{display:block;font-weight:800;font-size:1.15rem;margin:4px 0}.calc-box-result .calc-value{color:var(--accent);font-size:1.25rem}.calc-sub{display:block;font-size:.72rem;color:var(--ink-soft);font-weight:700}.calc-op{display:flex;align-items:center;font-size:1.5rem;font-weight:800;color:var(--ink-soft)}.formula-pill{text-align:center;background:var(--card);border:1.5px dashed var(--accent);color:var(--accent);border-radius:99px;padding:8px 14px;font-weight:800;font-size:.95rem;margin-top:14px}
+.conc-visual{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}.conc-tile{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:12px;text-align:center;box-shadow:var(--shadow)}.conc-vial{height:88px;width:56px;border:3px solid #9cb5cb;border-radius:12px 12px 16px 16px;position:relative;margin:0 auto 8px;background:#f8fbff;overflow:hidden}.conc-vial::before{content:'';position:absolute;top:-14px;left:10px;right:10px;height:14px;border-radius:5px 5px 0 0;background:#8fa3ba;border:2px solid #31435c;border-bottom:none}.conc-vial .liquid{position:absolute;left:0;right:0;bottom:0;background:#9fd3f5}.conc-vial .liquid.low{height:36px}.conc-vial .liquid.high{height:58px}.conc-tile strong{display:block;font-size:.82rem}.conc-tile span{display:block;font-size:.72rem;color:var(--ink-soft)}
+.syringe-svg{width:100%;background:var(--card);border:1.5px solid var(--line);border-radius:var(--radius);padding:8px;box-shadow:var(--shadow)}
+.table-visual{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}.table-cue{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:10px;text-align:center;box-shadow:var(--shadow)}.table-cue strong{display:block;font-size:.82rem}.table-cue span{display:block;font-size:.72rem;color:var(--ink-soft)}.bar{height:8px;background:#eef2f6;border-radius:99px;overflow:hidden;margin:8px 0 6px}.bar span{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#4cb391)}
+.table-wrap{max-height:54vh;overflow:auto;border-radius:var(--radius);border:1.5px solid var(--line);box-shadow:var(--shadow);background:var(--card);margin-top:8px}table{width:100%;border-collapse:collapse;font-size:.88rem}th{background:var(--accent-soft);color:var(--accent);font-weight:800;padding:10px 12px;text-align:left;font-size:.75rem;text-transform:uppercase;letter-spacing:.03em;position:sticky;top:0}td{padding:9px 12px;border-top:1px solid var(--line);font-weight:600}tr.highlight td{background:var(--accent-soft);color:var(--accent);font-weight:800}
+.summary-hero{display:grid;grid-template-columns:92px 1fr;gap:12px;align-items:center;margin-bottom:12px}.summary-badge{height:92px;width:92px;border-radius:24px;background:linear-gradient(180deg,#eef8f4,#ddefe7);border:1.5px solid #d2e5dd;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:var(--shadow)}.summary-badge strong{font-size:1.4rem;color:var(--accent)}.summary-badge span{font-size:.72rem;color:var(--ink-soft);font-weight:800}
+.summary-card{background:var(--card);border:1.5px solid var(--line);border-radius:var(--radius);padding:20px;text-align:center;box-shadow:var(--shadow)}.sum-row{display:flex;justify-content:space-between;align-items:center;background:var(--bg);border-radius:12px;padding:14px 16px}.sum-label{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft)}.sum-value{font-weight:800;font-size:1.15rem}.sum-final{background:var(--accent-soft)}.sum-final .sum-value{color:var(--accent);font-size:1.3rem}.sum-arrow{display:block;font-size:1.3rem;color:var(--accent);font-weight:800;margin:6px 0}.ratio-pill{margin-top:14px;background:var(--accent);color:#fff;border-radius:99px;padding:10px;font-weight:800;font-size:.95rem}
+.expandable{background:var(--card);border:1.5px solid var(--line);border-radius:var(--radius);margin-top:12px;overflow:hidden}.expandable summary{padding:15px 16px;font-weight:800;cursor:pointer;font-size:.95rem;list-style-position:inside}.expand-body{padding:0 16px 14px;font-size:.85rem;color:var(--ink-soft)}.expand-body ul{padding-left:18px;margin:8px 0}.sources a{color:var(--accent);font-weight:700;text-decoration:none;display:inline-block;margin:4px 0}
+.nav-row{display:flex;justify-content:space-between;gap:10px;padding:12px 20px calc(16px + env(safe-area-inset-bottom));position:sticky;bottom:0;background:linear-gradient(to top,var(--bg) 75%,transparent)}.btn{font-family:inherit;font-size:1.05rem;font-weight:800;padding:16px 24px;border-radius:16px;border:none;cursor:pointer;min-height:56px;min-width:130px;transition:transform .12s}.btn:active{transform:scale(.97)}.btn:focus-visible,.chip:focus-visible,#mgInput:focus-visible,summary:focus-visible{outline:3px solid rgba(31,122,99,.25);outline-offset:2px}.btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none;transform:none}.btn-primary{background:var(--accent);color:#fff;box-shadow:0 4px 14px rgba(31,122,99,.35);flex:2}.btn-back{background:var(--card);color:var(--ink);border:2px solid var(--line);flex:1}.summary-buttons{padding-top:16px;position:static;background:none}
+.foot{text-align:center;font-size:.68rem;color:#a3aebc;padding:14px 20px calc(14px + env(safe-area-inset-bottom))}
+@media(max-width:380px){.result-grid,.table-visual,.prep-grid,.flow-gallery,.conc-visual{grid-template-columns:1fr}.ratio-visual{grid-template-columns:1fr;gap:8px}.flow-op{transform:rotate(90deg)}.calc-flow{flex-direction:column}.calc-op{justify-content:center}.summary-hero{grid-template-columns:1fr;text-align:center}.summary-badge{margin:0 auto}}
+@media(min-width:420px){.chip-row{grid-template-columns:repeat(4,1fr)}}@media(min-width:520px){.app{border-left:1px solid var(--line);border-right:1px solid var(--line)}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="topbar">
+  <div class="topbar-row"><span class="brand-dot"></span><span id="stepLabel">Welcome</span><span class="step-count" id="stepCount">Step 1 of 10</span></div>
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+</header>
+<main id="wizard">
+
+<section class="step" data-title="Welcome">
+  <div class="step-inner">
+    <svg viewBox="0 0 240 120" class="hero-svg" role="img" aria-label="Peptide vial, bacteriostatic water vial and syringe">
+      <g><rect x="20" y="35" width="44" height="70" rx="8" fill="#eef2f7" stroke="#31435c" stroke-width="2.5"/><path d="M20 78h44v20a8 8 0 0 1-8 8h-28a8 8 0 0 1-8-8z" fill="#cfd9e6"/><path d="M20 80q11 8 22 4t22-3v8h-44z" fill="#f7f4ea" stroke="#b9ab86" stroke-width="1.5"/><rect x="20" y="26" width="44" height="12" rx="3" fill="#8fa3ba" stroke="#31435c" stroke-width="2"/><circle cx="42" cy="26" r="3.4" fill="#31435c"/></g>
+      <g><rect x="98" y="35" width="44" height="70" rx="8" fill="#eaf4fb" stroke="#23608f" stroke-width="2.5"/><path d="M98 60h44v37a8 8 0 0 1-8 8h-28a8 8 0 0 1-8-8z" fill="#bcdffb"/><rect x="98" y="26" width="44" height="12" rx="3" fill="#6ea7d3" stroke="#23608f" stroke-width="2"/><circle cx="120" cy="26" r="3.4" fill="#23608f"/></g>
+      <g transform="rotate(35 190 80)"><rect x="150" y="72" width="70" height="20" rx="4" fill="#fff" stroke="#31435c" stroke-width="2.5"/><rect x="150" y="76" width="42" height="12" rx="2" fill="#bcdffb"/><rect x="138" y="64" width="14" height="36" rx="4" fill="#6ea7d3" stroke="#23608f" stroke-width="2"/><line x1="160" y1="76" x2="160" y2="88" stroke="#9db4c9" stroke-width="1.4"/><line x1="170" y1="76" x2="170" y2="88" stroke="#9db4c9" stroke-width="1.4"/><line x1="180" y1="76" x2="180" y2="88" stroke="#9db4c9" stroke-width="1.4"/><line x1="190" y1="76" x2="190" y2="88" stroke="#9db4c9" stroke-width="1.4"/><line x1="200" y1="76" x2="200" y2="88" stroke="#9db4c9" stroke-width="1.4"/><line x1="210" y1="76" x2="210" y2="88" stroke="#9db4c9" stroke-width="1.4"/><line x1="218" y1="70" x2="218" y2="92" stroke="#31435c" stroke-width="2.5"/></g>
+    </svg>
+    <h1>Peptide Reconstitution Guide</h1>
+    <p class="subtitle">A visual guide to understanding reconstitution and concentration for research purposes only.</p>
+    <ul class="facts">
+      <li>✔ Understand the terminology</li>
+      <li>✔ See how diluent volume affects concentration</li>
+      <li>✔ Learn to read U-100 syringe markings</li>
+    </ul>
+    <p class="edu-badge">🔬 For research purposes only. Not medical advice.</p>
+    <p class="small-note">This guide is intended solely to illustrate reconstitution mathematics and research-use concepts.</p>
+  </div>
+  <div class="nav-row"><span></span><button class="btn btn-primary" data-next>Start Guide →</button></div>
+</section>
+
+<section class="step" data-title="Check Your Vial">
+  <div class="step-inner">
+    <h2>Check Your Vial</h2>
+    <p class="lead">How much peptide is contained in your vial?</p>
+    <div class="vial-visual">
+      <svg viewBox="0 0 140 160" aria-label="Vial with label" role="img">
+        <rect x="30" y="40" width="80" height="105" rx="12" fill="#eef2f7" stroke="#31435c" stroke-width="3"/>
+        <path d="M30 98h80v35a12 12 0 0 1-12 12h-56a12 12 0 0 1-12-12z" fill="#d8e3f0"/>
+        <rect x="30" y="20" width="80" height="22" rx="5" fill="#8fa3ba" stroke="#31435c" stroke-width="3"/>
+        <circle cx="70" cy="20" r="5" fill="#31435c"/>
+        <rect x="40" y="62" width="60" height="34" rx="4" fill="#fff" stroke="#b9c6d6" stroke-width="1.5"/>
+        <text id="vialLabelMg" x="70" y="80" text-anchor="middle" font-size="16" font-weight="800" fill="#1f7a63" font-family="Nunito, sans-serif">? mg</text>
+        <text x="70" y="92" text-anchor="middle" font-size="8" fill="#5c6d81" font-family="Nunito, sans-serif">peptide</text>
+      </svg>
+    </div>
+    <label class="field-label" for="mgInput">Vial amount (mg)</label>
+    <div class="input-row">
+      <input type="number" id="mgInput" inputmode="decimal" min="0.1" max="100" step="0.1" placeholder="e.g. 15" aria-label="Peptide amount in milligrams">
+      <span class="unit-chip">mg</span>
+    </div>
+    <div class="chip-row" role="group" aria-label="Common vial-size examples">
+      <button class="chip" data-mg="10">10 mg</button>
+      <button class="chip" data-mg="15">15 mg</button>
+      <button class="chip" data-mg="20">20 mg</button>
+      <button class="chip" data-mg="30">30 mg</button>
+    </div>
+    <p class="small-note">These are vial-size examples only — not treatment doses. You can also type another labelled vial amount manually.</p>
+  </div>
+  <div class="nav-row"><button class="btn btn-back" data-prev>← Previous</button><button class="btn btn-primary" data-next>Next →</button></div>
+</section>
+
+<section class="step" data-title="Reconstitution Volume">
+  <div class="step-inner">
+    <h2>Reconstitution Volume</h2>
+    <p class="lead">Using this guide's fixed research-use ratio:<br><strong>1 mg = 10 U = 0.10 mL</strong></p>
+
+    <div class="visual-card">
+      <div class="visual-title">Visual example</div>
+      <div class="ratio-visual">
+        <div class="mini-panel">
+          <svg class="step3-svg" viewBox="0 0 80 80" aria-hidden="true"><rect x="22" y="18" width="36" height="51" rx="6" fill="#eef2f7" stroke="#31435c" stroke-width="2.3"/><path d="M22 43h36v19a6 6 0 0 1-6 6h-24a6 6 0 0 1-6-6z" fill="#d8e3f0"/><rect x="22" y="10" width="36" height="10" rx="3" fill="#8fa3ba" stroke="#31435c" stroke-width="2"/><text id="heroVialMg" x="40" y="41" text-anchor="middle" font-size="12" font-weight="800" fill="#1f7a63" font-family="Nunito, sans-serif">— mg</text></svg>
+          <small>Your vial</small><strong id="heroVialMg2">— mg</strong>
+        </div>
+        <div class="flow-op">→</div>
+        <div class="mini-panel">
+          <svg class="step3-svg" viewBox="0 0 92 80" aria-hidden="true"><rect x="10" y="34" width="60" height="16" rx="4" fill="#fff" stroke="#31435c" stroke-width="2.2"/><rect id="heroSyringeFill" x="10" y="38" width="0" height="8" rx="2" fill="#bcdffb"/><rect x="0" y="28" width="12" height="28" rx="3" fill="#6ea7d3" stroke="#23608f" stroke-width="2"/><line x1="70" y1="34" x2="70" y2="50" stroke="#31435c" stroke-width="2.4"/><line x1="22" y1="36" x2="22" y2="48" stroke="#9db4c9"/><line x1="34" y1="36" x2="34" y2="48" stroke="#9db4c9"/><line x1="46" y1="36" x2="46" y2="48" stroke="#9db4c9"/><line x1="58" y1="36" x2="58" y2="48" stroke="#9db4c9"/><text id="heroUnits" x="40" y="66" text-anchor="middle" font-size="12" font-weight="800" fill="#1f7a63" font-family="Nunito, sans-serif">— U</text></svg>
+          <small>Draw this amount</small><strong id="heroUnits2">— U</strong>
+          <div class="capacity-bar"><div class="capacity-fill" id="capacityFill"></div></div>
+          <div class="capacity-label" id="capacityLabel">0% of a 1 mL U-100 syringe</div>
+        </div>
+        <div class="flow-op">→</div>
+        <div class="mini-panel">
+          <svg class="step3-svg" viewBox="0 0 80 80" aria-hidden="true"><rect x="24" y="14" width="32" height="56" rx="6" fill="#eaf4fb" stroke="#23608f" stroke-width="2.3"/><path id="heroWaterShape" d="M24 42h32v22a6 6 0 0 1-6 6H30a6 6 0 0 1-6-6z" fill="#bcdffb"/><rect x="24" y="7" width="32" height="9" rx="3" fill="#6ea7d3" stroke="#23608f" stroke-width="2"/><text id="heroMl" x="40" y="42" text-anchor="middle" font-size="12" font-weight="800" fill="#23608f" font-family="Nunito, sans-serif">— mL</text></svg>
+          <small>Equivalent liquid</small><strong id="heroMl2">— mL</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="equation-card">
+      <p class="eq-line" id="eqUnits">Enter your vial amount in Step 2</p>
+      <p class="eq-line" id="eqMl">…</p>
+    </div>
+    <div class="result-grid">
+      <div class="result-tile"><span class="tile-label">Your vial</span><span class="tile-value" id="resMg">— mg</span></div>
+      <div class="result-tile"><span class="tile-label">Bacteriostatic water</span><span class="tile-value" id="resUnits">— U</span></div>
+      <div class="result-tile"><span class="tile-label">Same volume as</span><span class="tile-value" id="resMl">— mL</span></div>
+    </div>
+    <div class="syringe-note" id="syringeNote" hidden>
+      <p>📏 <strong>Note on syringe size:</strong> A standard 1&nbsp;mL U-100 insulin syringe holds a maximum of 100&nbsp;U (1.00&nbsp;mL). Your required volume of <strong id="noteUnits">— U</strong> (<strong id="noteMl">— mL</strong>) <span id="noteFits">exceeds this</span>, so you would either need to draw the diluent in multiple steps, or use an appropriately sized syringe graduated in mL, following the applicable professional or protocol instructions.</p>
+    </div>
+    <p class="small-note">⚠ This ratio is the fixed research-use example used by this guide. It is not an official manufacturer or product instruction.</p>
+  </div>
+  <div class="nav-row"><button class="btn btn-back" data-prev>← Previous</button><button class="btn btn-primary" data-next>Next →</button></div>
+</section>
+
+<section class="step" data-title="What You Need">
+  <div class="step-inner">
+    <h2>What You Need</h2>
+    <div class="equip-grid">
+      <div class="equip-item"><svg viewBox="0 0 80 80"><rect x="22" y="20" width="36" height="54" rx="6" fill="#eef2f7" stroke="#31435c" stroke-width="2.5"/><path d="M22 48h36v20a6 6 0 0 1-6 6h-24a6 6 0 0 1-6-6z" fill="#cfd9e6"/><path d="M22 54q9 5 18 2t18-2v10h-36z" fill="#f7f4ea" stroke="#b9ab86" stroke-width="1.5"/><rect x="22" y="12" width="36" height="9" rx="3" fill="#8fa3ba" stroke="#31435c" stroke-width="2"/></svg><span>Lyophilized peptide vial</span></div>
+      <div class="equip-item"><svg viewBox="0 0 80 80"><rect x="22" y="20" width="36" height="54" rx="6" fill="#eaf4fb" stroke="#23608f" stroke-width="2.5"/><path d="M22 40h36v28a6 6 0 0 1-6 6h-24a6 6 0 0 1-6-6z" fill="#bcdffb"/><rect x="22" y="12" width="36" height="9" rx="3" fill="#6ea7d3" stroke="#23608f" stroke-width="2"/></svg><span>Bacteriostatic water</span></div>
+      <div class="equip-item"><svg viewBox="0 0 80 80"><g transform="rotate(45 40 40)"><rect x="10" y="35" width="52" height="14" rx="3" fill="#fff" stroke="#31435c" stroke-width="2.5"/><rect x="10" y="38" width="30" height="8" fill="#bcdffb"/><line x1="62" y1="34" x2="62" y2="50" stroke="#31435c" stroke-width="2.5"/><rect x="0" y="28" width="12" height="28" rx="3" fill="#6ea7d3" stroke="#23608f" stroke-width="2"/></g></svg><span>Sterile syringe</span></div>
+      <div class="equip-item"><svg viewBox="0 0 80 80"><g transform="rotate(45 40 40)"><rect x="8" y="32" width="16" height="20" rx="3" fill="#8fa3ba" stroke="#31435c" stroke-width="2"/><line x1="24" y1="42" x2="70" y2="42" stroke="#31435c" stroke-width="3" stroke-linecap="round"/></g></svg><span>Needle</span></div>
+      <div class="equip-item"><svg viewBox="0 0 80 80"><rect x="16" y="24" width="48" height="40" rx="6" fill="#fff" stroke="#b9c6d6" stroke-width="2"/><rect x="16" y="36" width="48" height="16" fill="#d6e2ee"/><path d="M24 30h32" stroke="#31435c" stroke-width="1.5" opacity="0.3"/><path d="M24 56h32" stroke="#31435c" stroke-width="1.5" opacity="0.3"/></svg><span>Alcohol swabs</span></div>
+    </div>
+  </div>
+  <div class="nav-row"><button class="btn btn-back" data-prev>← Previous</button><button class="btn btn-primary" data-next>Next →</button></div>
+</section>
+
+<section class="step" data-title="Prepare Carefully">
+  <div class="step-inner">
+    <h2>Prepare Carefully</h2>
+    <div class="visual-card">
+      <div class="visual-title">What this step should look like</div>
+      <div class="prep-grid">
+        <div class="prep-tile"><svg viewBox="0 0 80 80" aria-hidden="true"><rect x="16" y="22" width="48" height="34" rx="6" fill="#fff" stroke="#31435c" stroke-width="2"/><rect x="21" y="27" width="38" height="24" rx="4" fill="#e6f3ef"/><path d="M14 58h52" stroke="#aeb9c8" stroke-width="3" stroke-linecap="round"/><path d="M28 17h24" stroke="#1f7a63" stroke-width="3" stroke-linecap="round"/></svg><strong>Clean workspace</strong><span>Set up an organised, clear surface.</span></div>
+        <div class="prep-tile"><svg viewBox="0 0 80 80" aria-hidden="true"><path d="M26 45c0-8 4-14 10-18v-8a4 4 0 0 1 8 0v12l4-2a5 5 0 0 1 7 5v22H30a10 10 0 0 1-4-11z" fill="#f5d7bf" stroke="#8b5c40" stroke-width="2"/><path d="M22 57h36" stroke="#1f7a63" stroke-width="4" stroke-linecap="round"/></svg><strong>Clean hands</strong><span>Wash thoroughly before starting.</span></div>
+        <div class="prep-tile"><svg viewBox="0 0 80 80" aria-hidden="true"><circle cx="34" cy="34" r="16" fill="#fff" stroke="#31435c" stroke-width="2.5"/><path d="M46 46l12 12" stroke="#31435c" stroke-width="5" stroke-linecap="round"/><rect x="27" y="28" width="14" height="18" rx="3" fill="#eaf4fb" stroke="#23608f" stroke-width="1.8"/></svg><strong>Inspect vial</strong><span>Check label and contents carefully.</span></div>
+        <div class="prep-tile"><svg viewBox="0 0 80 80" aria-hidden="true"><rect x="24" y="14" width="32" height="50" rx="6" fill="#eef2f7" stroke="#31435c" stroke-width="2.3"/><rect x="24" y="7" width="32" height="9" rx="3" fill="#8fa3ba" stroke="#31435c" stroke-width="2"/><rect x="48" y="40" width="18" height="14" rx="3" fill="#fff" stroke="#b9c6d6" stroke-width="1.5"/><path d="M41 28c6 6 9 12 9 18" stroke="#1f7a63" stroke-width="3" stroke-linecap="round" stroke-dasharray="3 4"/></svg><strong>Swab & dry</strong><span>Clean the stopper and allow it to dry.</span></div>
+      </div>
+    </div>
+    <div class="card-list">
+      <div class="card"><span class="card-ico">🧼</span><span class="card-tx"><strong>Clean workspace</strong>Wipe down and organise your surface</span></div>
+      <div class="card"><span class="card-ico">🖐️</span><span class="card-tx"><strong>Clean hands</strong>Wash thoroughly before starting</span></div>
+      <div class="card"><span class="card-ico">🔍</span><span class="card-tx"><strong>Inspect vial</strong>Check the vial and contents before use</span></div>
+      <div class="card"><span class="card-ico">💧</span><span class="card-tx"><strong>Clean stopper</strong>Swab the vial stopper before entry</span></div>
+      <div class="card"><span class="card-ico">⏳</span><span class="card-tx"><strong>Allow to dry</strong>Let swabbed surfaces dry fully</span></div>
+      <div class="card"><span class="card-ico">✅</span><span class="card-tx"><strong>Sterile equipment</strong>Use appropriate sterile supplies</span></div>
+    </div>
+    <p class="note-strong">For physical preparation and sterile technique, follow the instructions supplied by the legitimate manufacturer, pharmacy, clinical-trial protocol, or healthcare professional.</p>
+  </div>
+  <div class="nav-row"><button class="btn btn-back" data-prev>← Previous</button><button class="btn btn-primary" data-next>Next →</button></div>
+</section>
+
+<section class="step" data-title="Reconstitution">
+  <div class="step-inner">
+    <h2>Reconstitution — mixing gently</h2>
+    <p class="lead">After the bacteriostatic water has been added, make the technique clear: <strong>place the vial horizontally on a flat surface and roll it slowly</strong>.</p>
+
+    <div class="visual-card">
+      <div class="visual-title">Clear mixing sequence</div>
+      <div class="mix-steps">
+        <div class="mix-panel">
+          <svg viewBox="0 0 320 150" role="img" aria-label="Place the vial horizontally on a flat surface">
+            <line x1="34" y1="122" x2="286" y2="122" class="surface-line"/>
+            <text x="160" y="141" text-anchor="middle" font-size="12" font-weight="700" fill="#5c6d81" font-family="Nunito, sans-serif">flat surface</text>
+            <g transform="translate(68 40)">
+              <rect x="0" y="20" width="130" height="42" rx="14" fill="#eef2f7" stroke="#31435c" stroke-width="3"/>
+              <rect x="-12" y="28" width="16" height="26" rx="4" fill="#8fa3ba" stroke="#31435c" stroke-width="2.5"/>
+              <rect x="126" y="28" width="16" height="26" rx="4" fill="#8fa3ba" stroke="#31435c" stroke-width="2.5"/>
+              <path d="M10 46h110v10a6 6 0 0 1-6 6H16a6 6 0 0 1-6-6z" fill="#bcdffb"/>
+              <circle cx="38" cy="49" r="6" fill="#f7f4ea" stroke="#b9ab86" stroke-width="1.5"/>
+              <circle cx="68" cy="50" r="5" fill="#f7f4ea" stroke="#b9ab86" stroke-width="1.5"/>
+              <circle cx="94" cy="48" r="4" fill="#f7f4ea" stroke="#b9ab86" stroke-width="1.5"/>
+            </g>
+          </svg>
+          <strong>1. Place the vial on its side</strong>
+          <span>Set the vial horizontally on a clean, flat surface once the bacteriostatic water has been introduced.</span>
+        </div>
+
+        <div class="mix-grid">
+          <div class="mix-panel">
+            <div class="rolling-demo" role="img" aria-label="Animated top-down demonstration of a vial rolling away and back on a flat surface like a baker's rolling pin">
+              <svg viewBox="0 0 220 190">
+                <rect x="36" y="18" width="148" height="132" rx="18" class="surface-panel"/>
+                <line x1="54" y1="40" x2="166" y2="40" stroke="#dfe8ef" stroke-width="2" stroke-dasharray="4 5"/>
+                <line x1="54" y1="128" x2="166" y2="128" stroke="#dfe8ef" stroke-width="2" stroke-dasharray="4 5"/>
+                <text x="110" y="12" text-anchor="middle" class="travel-text">roll away</text>
+                <text x="110" y="170" text-anchor="middle" class="travel-text">roll back</text>
+                <g class="travel-arrow">
+                  <path d="M110 24v14" fill="none" stroke="#1f7a63" stroke-width="4" stroke-linecap="round"/>
+                  <path d="M102 31l8 9 8-9" fill="none" stroke="#1f7a63" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+                <g class="travel-arrow rev">
+                  <path d="M110 152v-14" fill="none" stroke="#1f7a63" stroke-width="4" stroke-linecap="round"/>
+                  <path d="M102 145l8-9 8 9" fill="none" stroke="#1f7a63" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+
+                <g class="ghost-vial" transform="translate(66 44)">
+                  <rect x="0" y="20" width="88" height="28" rx="14" fill="#eef2f7" stroke="#31435c" stroke-width="2.2"/>
+                  <rect x="-9" y="27" width="11" height="14" rx="3" fill="#8fa3ba" stroke="#31435c" stroke-width="1.7"/>
+                  <rect x="86" y="27" width="11" height="14" rx="3" fill="#8fa3ba" stroke="#31435c" stroke-width="1.7"/>
+                  <path d="M9 35h70v5.5a5 5 0 0 1-5 5H14a5 5 0 0 1-5-5z" fill="#bcdffb"/>
+                  <line x1="44" y1="20" x2="44" y2="48" stroke="#57a77b" stroke-width="3.2" stroke-linecap="round"/>
+                </g>
+                <g class="ghost-vial" transform="translate(66 94)">
+                  <rect x="0" y="20" width="88" height="28" rx="14" fill="#eef2f7" stroke="#31435c" stroke-width="2.2"/>
+                  <rect x="-9" y="27" width="11" height="14" rx="3" fill="#8fa3ba" stroke="#31435c" stroke-width="1.7"/>
+                  <rect x="86" y="27" width="11" height="14" rx="3" fill="#8fa3ba" stroke="#31435c" stroke-width="1.7"/>
+                  <path d="M9 35h70v5.5a5 5 0 0 1-5 5H14a5 5 0 0 1-5-5z" fill="#bcdffb"/>
+                  <line x1="44" y1="20" x2="44" y2="48" stroke="#57a77b" stroke-width="3.2" stroke-linecap="round"/>
+                </g>
+
+                <g class="roll-track-vial" transform="translate(66 94)">
+                  <rect x="0" y="20" width="88" height="28" rx="14" fill="#eef2f7" stroke="#31435c" stroke-width="2.4"/>
+                  <rect x="-9" y="27" width="11" height="14" rx="3" fill="#8fa3ba" stroke="#31435c" stroke-width="1.8"/>
+                  <rect x="86" y="27" width="11" height="14" rx="3" fill="#8fa3ba" stroke="#31435c" stroke-width="1.8"/>
+                  <path d="M9 35h70v5.5a5 5 0 0 1-5 5H14a5 5 0 0 1-5-5z" fill="#bcdffb"/>
+                  <g class="roll-marker">
+                    <line x1="44" y1="20" x2="44" y2="48" stroke="#57a77b" stroke-width="3.4" stroke-linecap="round"/>
+                  </g>
+                  <circle cx="36" cy="38" r="3.2" fill="#f7f4ea" stroke="#b9ab86" stroke-width="1.2"/>
+                  <circle cx="52" cy="38" r="2.9" fill="#f7f4ea" stroke="#b9ab86" stroke-width="1.2"/>
+                </g>
+              </svg>
+            </div>
+            <div class="roll-caption">The vial stays horizontal, moves away and back across the flat surface, and rotates as it travels — like a baker’s rolling pin.</div>
+            <strong>2. Roll it like a baker’s rolling pin</strong>
+            <span>Keep the vial horizontal and roll it away from you and back toward you so it turns continuously while moving.</span>
+          </div>
+
+          <div class="mix-panel">
+            <svg viewBox="0 0 220 150" role="img" aria-label="Do not shake aggressively">
+              <line x1="24" y1="118" x2="196" y2="118" class="surface-line"/>
+              <g transform="translate(45 38)">
+                <rect x="0" y="16" width="130" height="38" rx="13" fill="#eef2f7" stroke="#31435c" stroke-width="3"/>
+                <rect x="-12" y="24" width="16" height="22" rx="4" fill="#8fa3ba" stroke="#31435c" stroke-width="2.4"/>
+                <rect x="126" y="24" width="16" height="22" rx="4" fill="#8fa3ba" stroke="#31435c" stroke-width="2.4"/>
+                <path d="M10 39h110v9a5 5 0 0 1-5 5H15a5 5 0 0 1-5-5z" fill="#bcdffb"/>
+              </g>
+              <path d="M70 34l-9-10M81 29l-1-14M92 30l8-11M147 34l9-10M136 29l1-14M125 30l-8-11" stroke="#d35151" stroke-width="4" stroke-linecap="round"/>
+              <circle cx="182" cy="34" r="16" fill="#fff" stroke="#d35151" stroke-width="4"/>
+              <path d="M174 26l16 16M190 26l-16 16" stroke="#d35151" stroke-width="4" stroke-linecap="round"/>
+            </svg>
+            <strong>3. Avoid aggressive shaking</strong>
+            <span>Do not shake forcefully. The visual should clearly show a calm rolling motion instead.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mix-note">💡 Clear instruction: once bacteriostatic water is in the vial, place the vial horizontally on a flat surface and roll it away from you and back toward you exactly like a baker rolls a rolling pin, until the contents appear evenly mixed.</div>
+    <div class="avoid-shake" style="margin-top:10px">⚠ For research purposes only. Follow any product-specific or protocol-specific handling guidance where applicable.</div>
+  </div>
+  <div class="nav-row"><button class="btn btn-back" data-prev>← Previous</button><button class="btn btn-primary" data-next>Next →</button></div>
+</section>
+
+<section class="step" data-title="Concentration">
+  <div class="step-inner">
+    <h2>Concentration Result</h2>
+    <div class="visual-card">
+      <div class="visual-title">What concentration looks like</div>
+      <div class="conc-visual">
+        <div class="conc-tile"><div class="conc-vial"><div class="liquid low"></div></div><strong>Less liquid</strong><span>Higher concentration in a smaller volume.</span></div>
+        <div class="conc-tile"><div class="conc-vial"><div class="liquid high"></div></div><strong>More liquid</strong><span>Lower concentration if total mg stayed the same.</span></div>
+      </div>
+    </div>
+    <div class="calc-flow">
+      <div class="calc-box"><span class="calc-label">Your vial</span><span class="calc-value" id="cVial">— mg</span><span class="calc-sub">peptide</span></div>
+      <span class="calc-op">÷</span>
+      <div class="calc-box"><span class="calc-label">Liquid volume</span><span class="calc-value" id="cMl">— mL</span><span class="calc-sub" id="cU">— U</span></div>
+      <span class="calc-op">=</span>
+      <div class="calc-box calc-box-result"><span class="calc-label">Concentration</span><span class="calc-value">10 mg/mL</span><span class="calc-sub">10,000 mcg/mL</span></div>
+    </div>
+    <p class="formula-pill" id="cFormula">— mg ÷ — mL = 10 mg/mL</p>
+    <p class="insight">💡 Adding liquid changes concentration, not the total original amount of material in the vial.</p>
+    <p class="small-note">Concentration = total vial mg ÷ total liquid volume. This guide always uses the fixed 1 mg : 0.10 mL educational ratio, so the concentration stays 10 mg/mL.</p>
+  </div>
+  <div class="nav-row"><button class="btn btn-back" data-prev>← Previous</button><button class="btn btn-primary" data-next>Next →</button></div>
+</section>
+
+<section class="step" data-title="U-100 Syringe">
+  <div class="step-inner">
+    <h2>Reading a U-100 Syringe</h2>
+    <svg viewBox="0 0 340 130" class="syringe-svg" role="img" aria-label="Labelled U-100 insulin syringe showing volume units">
+      <rect x="24" y="46" width="270" height="28" rx="6" fill="#fff" stroke="#31435c" stroke-width="2.5"/>
+      <rect x="24" y="52" width="243" height="16" fill="#cdeafc"/>
+      <rect x="4" y="37" width="22" height="46" rx="5" fill="#6ea7d3" stroke="#23608f" stroke-width="2"/>
+      <rect x="292" y="53" width="38" height="14" rx="3" fill="#8fa3ba" stroke="#31435c" stroke-width="2"/>
+      <g stroke="#31435c" stroke-width="1.7">
+        <line x1="51" y1="46" x2="51" y2="74"/><line x1="78" y1="46" x2="78" y2="74"/>
+        <line x1="105" y1="46" x2="105" y2="74"/><line x1="132" y1="46" x2="132" y2="74"/>
+        <line x1="159" y1="42" x2="159" y2="78" stroke-width="2.8"/>
+        <line x1="186" y1="46" x2="186" y2="74"/><line x1="213" y1="46" x2="213" y2="74"/>
+        <line x1="240" y1="46" x2="240" y2="74"/><line x1="267" y1="46" x2="267" y2="74"/>
+        <line x1="294" y1="40" x2="294" y2="80" stroke-width="3.2"/>
+      </g>
+      <g font-family="Nunito, sans-serif" font-size="11" fill="#31435c" font-weight="700" text-anchor="middle">
+        <text x="24" y="102">0</text><text x="51" y="102">10U</text><text x="78" y="102">20U</text>
+        <text x="159" y="102">50U</text><text x="294" y="102">100U</text>
+      </g>
+      <text x="294" y="119" text-anchor="middle" font-family="Nunito, sans-serif" font-size="10" fill="#5c6d81" font-weight="700">1.00 mL</text>
+    </svg>
+    <p class="small-note center">100 U = 1.00 mL · 50 U = 0.50 mL · 20 U = 0.20 mL<br>10 U = 0.10 mL · 5 U = 0.05 mL · 1 U = 0.01 mL</p>
+    <div class="warn-box">⚠ These "units" refer only to <strong>volume markings on a U-100 syringe</strong>. They are not peptide dose units.</div>
+    <p class="small-note">Amounts above this do not fit in a 1 mL U-100 syringe; any larger-volume equipment should be interpreted using its own mL graduations and the applicable professional or protocol instructions.</p>
+  </div>
+  <div class="nav-row"><button class="btn btn-back" data-prev>← Previous</button><button class="btn btn-primary" data-next>Next →</button></div>
+</section>
+
+<section class="step" data-title="Ratio Table">
+  <div class="step-inner">
+    <h2>Fixed Ratio Table</h2>
+    <div class="visual-card">
+      <div class="visual-title">Quick visual comparison</div>
+      <div class="table-visual">
+        <div class="table-cue"><strong>1 mg</strong><div class="bar"><span style="width:10%"></span></div><span>10 U · 0.10 mL</span></div>
+        <div class="table-cue"><strong>5 mg</strong><div class="bar"><span style="width:50%"></span></div><span>50 U · 0.50 mL</span></div>
+        <div class="table-cue"><strong>10 mg</strong><div class="bar"><span style="width:100%"></span></div><span>100 U · 1.00 mL</span></div>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Vial</th><th>Units</th><th>mL</th><th>Conc.</th></tr></thead>
+        <tbody id="ratioTable"></tbody>
+      </table>
+    </div>
+    <p class="small-note">The table shows the 1–10 mg worked examples from this guide. If you selected a larger whole-number vial size, that row is also shown for comparison. These are mathematical examples for research purposes only, not official dosing instructions.</p>
+  </div>
+  <div class="nav-row"><button class="btn btn-back" data-prev>← Previous</button><button class="btn btn-primary" data-next>Next →</button></div>
+</section>
+
+<section class="step" data-title="Summary">
+  <div class="step-inner">
+    <h2>Your Reconstitution Summary</h2>
+    <div class="summary-hero">
+      <div class="summary-badge"><strong>10</strong><span>mg/mL</span></div>
+      <div>
+        <p class="lead" style="margin-bottom:0">This final screen brings together the vial amount you selected, the matching bacteriostatic-water volume under the fixed research-use ratio, and the resulting concentration.</p>
+      </div>
+    </div>
+    <div class="summary-card">
+      <div class="sum-row"><span class="sum-label">Vial</span><span class="sum-value" id="sVial">— mg</span></div>
+      <span class="sum-arrow">↓</span>
+      <div class="sum-row"><span class="sum-label">Bacteriostatic water</span><span class="sum-value" id="sWater">— U · — mL</span></div>
+      <span class="sum-arrow">↓</span>
+      <div class="sum-row sum-final"><span class="sum-label">Concentration</span><span class="sum-value">10 mg/mL</span></div>
+      <div class="ratio-pill">1 mg = 10 U = 0.10 mL</div>
+    </div>
+    <p class="edu-badge">🔬 For research purposes only. Not medical advice.</p>
+    <p class="small-note">This summary reflects your selected vial size and this guide's fixed research-use ratio. It is not a treatment recommendation.</p>
+    <details class="expandable">
+      <summary>📦 Storage &amp; Important Information</summary>
+      <div class="expand-body">
+        <p>General principles that apply to reconstituted peptide products:</p>
+        <ul>
+          <li><strong>Contamination risk:</strong> every vial entry introduces contamination risk — sterile technique matters throughout.</li>
+          <li><strong>Sterile handling:</strong> use appropriate supplies and clean the stopper before each entry.</li>
+          <li><strong>Storage temperature &amp; light:</strong> follow product-specific documentation.</li>
+          <li><strong>Appropriate diluent:</strong> this guide illustrates bacteriostatic water as its example diluent; confirm the correct diluent for your product.</li>
+          <li><strong>Post-reconstitution stability:</strong> validated product-specific stability data was not confirmed here. Follow the documentation associated with the legitimate product, pharmacy, research protocol, or treating professional.</li>
+          <li><strong>Beyond-use period:</strong> follow manufacturer, pharmacy, or prescriber guidance.</li>
+        </ul>
+      </div>
+    </details>
+    <details class="expandable">
+      <summary>🔬 Scientific Sources</summary>
+      <div class="expand-body">
+        <ul class="sources">
+          <li><a href="https://clinicaltrials.gov/" target="_blank" rel="noopener">ClinicalTrials.gov — clinical research records</a></li>
+          
+          <li><a href="https://pubmed.ncbi.nlm.nih.gov/" target="_blank" rel="noopener">PubMed — peer-reviewed research literature</a></li>
+          <li><a href="https://www.fda.gov/" target="_blank" rel="noopener">U.S. FDA — regulatory information</a></li>
+          <li><a href="https://peptideplus.shop/peptide-calculator" target="_blank" rel="noopener">PeptidePlus calculator</a> — interface/concept reference only, not a scientific authority</li>
+        </ul>
+        <p class="small-note">Link content may change; verify current information directly.</p>
+      </div>
+    </details>
+    <div class="nav-row summary-buttons">
+      <button class="btn btn-back" id="restartBtn">↺ Restart Guide</button>
+      <span></span>
+    </div>
+  </div>
+</section>
+
+</main>
+<footer class="foot">For research purposes only · Not medical advice</footer>
+</div>
+<script>
+(() => {
+  "use strict";
+  const RATIO_UNITS_PER_MG = 10;
+  const RATIO_ML_PER_MG = 0.10;
+  const state = { vialMg: null };
+  const steps = Array.from(document.querySelectorAll('.step'));
+  const total = steps.length;
+  let current = 0;
+  const $ = id => document.getElementById(id);
+  const els = {
+    fill: $('progressFill'), count: $('stepCount'), label: $('stepLabel'),
+    mgInput: $('mgInput'), vialLabelMg: $('vialLabelMg'),
+    eqUnits: $('eqUnits'), eqMl: $('eqMl'),
+    resMg: $('resMg'), resUnits: $('resUnits'), resMl: $('resMl'),
+    cVial: $('cVial'), cMl: $('cMl'), cU: $('cU'), cFormula: $('cFormula'),
+    sVial: $('sVial'), sWater: $('sWater'), table: $('ratioTable'),
+    syringeNote: $('syringeNote'), noteUnits: $('noteUnits'), noteMl: $('noteMl'), noteFits: $('noteFits'),
+    heroVialMg: $('heroVialMg'), heroVialMg2: $('heroVialMg2'), heroUnits: $('heroUnits'), heroUnits2: $('heroUnits2'), heroMl: $('heroMl'), heroMl2: $('heroMl2'),
+    capacityFill: $('capacityFill'), capacityLabel: $('capacityLabel'), heroSyringeFill: $('heroSyringeFill')
+  };
+  const fmtMl = ml => ml.toFixed(2);
+  const fmtNum = n => Number.isInteger(n) ? n : n.toFixed(1);
+  function renderCalculations(){
+    const mg = state.vialMg;
+    if (!mg || mg <= 0) { renderEmpty(); return; }
+    const u = mg * RATIO_UNITS_PER_MG;
+    const v = mg * RATIO_ML_PER_MG;
+    const conc = mg / v;
+    els.vialLabelMg.textContent = `${fmtNum(mg)} mg`;
+    els.eqUnits.innerHTML = `${fmtNum(mg)} mg × 10 U = <strong>${fmtNum(u)} U</strong>`;
+    els.eqMl.innerHTML = `<strong>${fmtNum(u)} U</strong> = <strong>${fmtMl(v)} mL</strong> bacteriostatic water`;
+    els.resMg.textContent = `${fmtNum(mg)} mg`; els.resUnits.textContent = `${fmtNum(u)} U`; els.resMl.textContent = `${fmtMl(v)} mL`;
+    els.cVial.textContent = `${fmtNum(mg)} mg`; els.cMl.textContent = `${fmtMl(v)} mL`; els.cU.textContent = `${fmtNum(u)} U`;
+    els.cFormula.textContent = `${fmtNum(mg)} mg ÷ ${fmtMl(v)} mL = ${fmtNum(conc)} mg/mL`;
+    els.sVial.textContent = `${fmtNum(mg)} mg`; els.sWater.textContent = `${fmtNum(u)} U · ${fmtMl(v)} mL`;
+    [els.heroVialMg, els.heroVialMg2].forEach(el => el.textContent = `${fmtNum(mg)} mg`);
+    [els.heroUnits, els.heroUnits2].forEach(el => el.textContent = `${fmtNum(u)} U`);
+    [els.heroMl, els.heroMl2].forEach(el => el.textContent = `${fmtMl(v)} mL`);
+    const pct = Math.min((u / 100) * 100, 100);
+    els.capacityFill.style.width = `${pct}%`;
+    els.heroSyringeFill.setAttribute('width', String(Math.max(0, Math.min(60, u * 0.6))));
+    els.capacityLabel.textContent = u <= 100 ? `${Math.round(pct)}% of a 1 mL U-100 syringe` : `${fmtNum(u)} U exceeds a 1 mL U-100 syringe`;
+    if (u > 100) {
+      els.syringeNote.hidden = false;
+      els.noteUnits.textContent = `${fmtNum(u)} U`;
+      els.noteMl.textContent = `${fmtMl(v)} mL`;
+      els.noteFits.textContent = 'exceeds this';
+    } else {
+      els.syringeNote.hidden = true;
+    }
+  }
+  function renderEmpty(){
+    els.vialLabelMg.textContent = '? mg';
+    [['resMg','— mg'],['resUnits','— U'],['resMl','— mL'],['cVial','— mg'],['cMl','— mL'],['cU','— U'],['sVial','— mg'],['sWater','— U · — mL']].forEach(([k,v]) => els[k].textContent = v);
+    els.eqUnits.textContent = 'Enter your vial amount in Step 2'; els.eqMl.textContent = '…'; els.cFormula.textContent = '— mg ÷ — mL = 10 mg/mL';
+    [els.heroVialMg, els.heroVialMg2].forEach(el => el.textContent = '— mg');
+    [els.heroUnits, els.heroUnits2].forEach(el => el.textContent = '— U');
+    [els.heroMl, els.heroMl2].forEach(el => el.textContent = '— mL');
+    els.capacityFill.style.width = '0%'; els.capacityLabel.textContent = '0% of a 1 mL U-100 syringe';
+    els.heroSyringeFill.setAttribute('width','0');
+    els.syringeNote.hidden = true;
+  }
+  function buildTable(){
+    const rows = [];
+    const values = Array.from({length:10}, (_,i) => i + 1);
+    if (Number.isInteger(state.vialMg) && state.vialMg > 10 && state.vialMg <= 100) values.push(state.vialMg);
+    [...new Set(values)].forEach(mg => {
+      const hi = state.vialMg === mg ? " class='highlight'" : '';
+      rows.push(`<tr${hi}><td>${mg} mg</td><td>${mg*10} U</td><td>${(mg*0.1).toFixed(2)} mL</td><td>10 mg/mL</td></tr>`);
+    });
+    els.table.innerHTML = rows.join('');
+  }
+  function syncNextState(){
+    const next = steps[current].querySelector('[data-next]');
+    if (!next) return;
+    const needsVial = current === 1;
+    next.disabled = needsVial && !(state.vialMg > 0);
+    next.setAttribute('aria-disabled', next.disabled ? 'true' : 'false');
+  }
+  function resetGuide(){
+    state.vialMg = null; els.mgInput.value = ''; document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+    renderEmpty(); buildTable(); show(0);
+  }
+  function show(index){
+    if (index < 0 || index >= total) return;
+    steps[current].classList.remove('active'); current = index; steps[current].classList.add('active');
+    els.fill.style.width = `${((current+1)/total)*100}%`; els.count.textContent = `Step ${current+1} of ${total}`; els.label.textContent = steps[current].dataset.title;
+    if (steps[current].dataset.title === 'Ratio Table') buildTable();
+    renderCalculations(); syncNextState(); window.scrollTo({top:0, behavior:'smooth'});
+  }
+  document.querySelectorAll('[data-next]').forEach(b => b.addEventListener('click', () => show(current + 1)));
+  document.querySelectorAll('[data-prev]').forEach(b => b.addEventListener('click', () => show(current - 1)));
+  $('restartBtn').addEventListener('click', resetGuide);
+  els.mgInput.addEventListener('input', () => { const v = parseFloat(els.mgInput.value); state.vialMg = (v > 0) ? v : null; document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected')); renderCalculations(); syncNextState(); buildTable(); });
+  document.querySelectorAll('.chip').forEach(chip => chip.addEventListener('click', () => { state.vialMg = parseFloat(chip.dataset.mg); els.mgInput.value = state.vialMg; document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected')); chip.classList.add('selected'); renderCalculations(); syncNextState(); buildTable(); }));
+  buildTable(); renderEmpty(); show(0);
+})();
+</script>
+</body>
+</html>
